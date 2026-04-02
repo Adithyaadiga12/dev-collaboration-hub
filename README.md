@@ -54,8 +54,28 @@ DELETE /projects/{id}              → Delete your project
 WS     /ws/{project_id}/{username} → Join project chat room
 GET    /projects/{id}/github       → Live GitHub repo stats
 ```
+## UI
 
-## Running It Locally
+Built a frontend using Streamlit that connects to the REST API(just to appeal).
+
+**Pages:**
+- Login and Register
+- Browse all projects
+- Create a new project
+- View live GitHub repo stats
+- Profile page
+
+**Run the UI:**
+```bash
+# Terminal 1 - Backend
+uvicorn app.main:app --reload
+
+# Terminal 2 - Frontend
+streamlit run ui.py
+```
+Visit `http://localhost:8501` to use the app.
+
+### Running It Locally
 ```bash
 git clone https://github.com/Adithyaadiga12/dev-collab-hub.git
 cd dev-collab-hub
