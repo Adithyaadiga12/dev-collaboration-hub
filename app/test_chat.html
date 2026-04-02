@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Test</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 40px auto; }
+        #messages { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px; }
+        input { padding: 8px; width: 70%; }
+        button { padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <h2>Dev Collab Hub — Chat Test</h2>
+
+    <div>
+        Project ID: <input id="projectId" value="1" style="width:50px">
+        Username: <input id="username" value="adithya">
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+    </div>
+
+    <br>
+    <div id="messages"></div>
+
+    <input id="messageInput" placeholder="Type a message..." onkeypress="handleKey(event)">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        let ws = null;
+
+        function connect() {
+            const projectId = document.getElementById('projectId').value;
+            const username = document.getElementById('username').value;
+
+            // Connect to our WebSocket endpoint
+            ws = new WebSocket(`ws://localhost:8000/ws/${projectId}/${username}`);
+
+            ws.onopen = () => addMessage('✅ Connected!', 'green');
+            ws.onmessage = (event) => addMessage(event.data);
+            ws.onclose = () => addMessage('❌ Disconnected', 'red');
+            ws.onerror = () => addMessage('⚠️ Error', 'red');
+        }
+
+        function disconnect() {
+            if (ws) ws.close();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            if (ws && input.value) {
+                ws.send(input.value);
+                input.value = '';
+            }
+        }
+
+        function handleKey(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function addMessage(text, color = 'black') {
+            const div = document.getElementById('messages');
+            div.innerHTML += `<p style="color:${color};margin:4px 0">${text}</p>`;
+            div.scrollTop = div.scrollHeight;
+        }
+    </script>
+</body>
+</html>
